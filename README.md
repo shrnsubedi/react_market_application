@@ -1,7 +1,19 @@
-# Market-list React template
+## Installation
 
-To use this template from GitHub CLI, run the following command:
+Clone down this repository. You will need `node` and `npm` installed globally on your machine.
 
-```
-gh repo create name_of_your_app --template ebenezerdon/market-list-template
-```
+Installation:
+
+`npm install`
+
+To Run Test Suite:
+
+`npm test`
+
+To Start Server:
+
+`npm start`
+
+To Visit App:
+
+`localhost:3000/`

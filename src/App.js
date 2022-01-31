@@ -1,16 +1,26 @@
 import './App.css'
 
+import { useState, useEffect } from 'react';
+
 import Dexie from 'dexie'
 import {useLiveQuery} from 'dexie-react-hooks';
+import FlashMessage from 'react-flash-message';
 
 const App = () => {
 
+  // Database Initialization
   const db = new Dexie("MarketList");
 
   db.version(1).stores(
     {items: "++id,name,price,itemHasBeenPurchased"}
   )
 
+  // State
+  const allItems = useLiveQuery(()=>db.items.toArray(),[]);
+  const [showMessage, setShowMessage] = useState(false);
+  const [flashMessage, setFlashMessage] = useState('Success');
+  
+  // Database Methods
   const addItemToDb = async event => {
     event.preventDefault()
     const name = document.querySelector('.item-name').value
@@ -20,24 +30,34 @@ const App = () => {
       price:Number(price),
       itemHasBeenPurchased:false
     })
+    document.querySelector('.item-name').value='';
+    document.querySelector('.item-price').value='';
+    setFlashMessage("Success! Item was added");
+    setShowMessage(true);
   }
   
   const removeItemFromDb = async id => {
     await db.items.delete(id)
+    setFlashMessage("Success! Item was deleted")
+    setShowMessage(true)
   }
   
   const markAsPurchased = async (id,event) => {
     if (event.target.checked){
       await db.items.update(id,{itemHasBeenPurchased:true})
+      setFlashMessage("Item marked as complete")
+      setShowMessage(true)
     }
     else{
       await db.items.update(id,{itemHasBeenPurchased:false})
+      setFlashMessage("Item marked as to-do")
+      setShowMessage(true)
     }
   }
-
-  const allItems = useLiveQuery(()=>db.items.toArray(),[]);
+  
   if (!allItems) return null
 
+  // Render
   const itemData = allItems.map(({id,name,price,itemHasBeenPurchased})=>(
     <div className='row' key={id}>
       <p className='col s5'>
@@ -47,7 +67,7 @@ const App = () => {
         </label>
       </p>
       <p className='col s5'>${price}</p>
-      <i onClick={() => removeItemFromDb(id)} className='col s2 material-icons delete-button'></i>
+      <i onClick={() => removeItemFromDb(id)} className='col s2 material-icons delete-button'>delete</i>
     </div>
   ))
   
@@ -68,6 +88,14 @@ const App = () => {
           </form>
         </div>
       </div>
+    }
+
+    { showMessage &&  
+          <div class="">
+              <FlashMessage duration={2000}>
+                  <strong className='chip green'>{flashMessage}</strong>
+              </FlashMessage>
+          </div>
     }
     </div>
   );

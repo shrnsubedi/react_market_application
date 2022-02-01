@@ -1,6 +1,6 @@
 import './App.css'
 
-import { useState} from 'react';
+import { useState,useEffect} from 'react';
 
 import Dexie from 'dexie'
 import {useLiveQuery} from 'dexie-react-hooks';
@@ -18,6 +18,14 @@ const App = () => {
   const [showMessage, setShowMessage] = useState(false);
   const [flashMessage, setFlashMessage] = useState('Success');
   
+
+  // Hooks
+  useEffect(()=>{
+    setTimeout(()=>{
+      setShowMessage(false)
+    },2000)
+  },[showMessage])
+
   // Database Methods
   const addItemToDb = async event => {
     event.preventDefault()
@@ -58,6 +66,8 @@ const App = () => {
     db.tables.forEach(function (table) {
       table.clear();
     });
+    setFlashMessage("All tables cleared successfully")
+    setShowMessage(true)
   }
   
   if (!allItems) return null

@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/react_market_application/static/css/main.9245139a.css",
+    "main.js": "/react_market_application/static/js/main.50b3307c.js",
+    "index.html": "/react_market_application/index.html",
+    "main.9245139a.css.map": "/react_market_application/static/css/main.9245139a.css.map",
+    "main.50b3307c.js.map": "/react_market_application/static/js/main.50b3307c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9245139a.css",
+    "static/js/main.50b3307c.js"
+  ]
+}

@@ -1,19 +1,17 @@
 import './App.css'
 
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 
 import Dexie from 'dexie'
 import {useLiveQuery} from 'dexie-react-hooks';
 import FlashMessage from 'react-flash-message';
 
 const App = () => {
-
   // Database Initialization
   const db = new Dexie("MarketList");
-
-  db.version(1).stores(
-    {items: "++id,name,price,itemHasBeenPurchased"}
-  )
+    db.version(1).stores(
+      {items: "++id,name,price,itemHasBeenPurchased"}
+    )
 
   // State
   const allItems = useLiveQuery(()=>db.items.toArray(),[]);
@@ -54,6 +52,13 @@ const App = () => {
       setShowMessage(true)
     }
   }
+
+  const clearCache = (event) => {
+    event.preventDefault()
+    db.tables.forEach(function (table) {
+      table.clear();
+    });
+  }
   
   if (!allItems) return null
 
@@ -79,6 +84,7 @@ const App = () => {
         <input className='item-name' type="text" placeholder="Name of item" required />
         <input className='item-price' type="number" placeholder="Price in USD" required />
         <button type="submit" className="waves-effect waves-light btn right">Add item</button>
+        <button className='waves-effect waves-light red btn' onClick={event => clearCache(event)}> Clear Tables</button>
       </form>
       {allItems.length > 0 &&
       <div className="card white darken-1">
@@ -91,7 +97,7 @@ const App = () => {
     }
 
     { showMessage &&  
-          <div class="">
+          <div>
               <FlashMessage duration={2000}>
                   <strong className='chip green'>{flashMessage}</strong>
               </FlashMessage>
